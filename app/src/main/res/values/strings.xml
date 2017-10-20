@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">RetrofitSample</string>
+    <string name="action_settings">settings</string>
+    <string name="sort_by">Sort_Movies</string>
+    <string name="most_popular">popular</string>
+    <string name="top_rated">top_rated</string>
+    <string name="nofav">no array movies</string>
+    <string name="title">title</string>
+    <string name="subtitle">description</string>
+    <string name="fav_removed">favorite removed</string>
+    <string name="added_to_favorites">favorite_added</string>
+    <string name="favorite">Favorite</string>
+</resources>
