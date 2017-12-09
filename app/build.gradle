@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "com.example.jonat.retrofitsample"
-        minSdkVersion 15
+        applicationId "com.emi.jonat.vepelis"
+        minSdkVersion 17
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -17,26 +17,46 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildTypes.each {
+        it.buildConfigField "String", "MOVIE_API", "\"e568b8a0746be29e194efdcf43151703\"";
+    }
+
+
 }
 
 dependencies {
+    implementation 'com.google.android.gms:play-services-auth:11.6.2'
+    implementation 'com.google.firebase:firebase-messaging:11.6.2'
+    implementation 'com.google.android.gms:play-services-maps:11.6.2'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     // retrofit, gson
-    
-
 
     // retrofit, gson
 
 
-compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.android.support:cardview-v7:26.1.0'
     compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'org.cryse.widget:persistentsearchview:1.0.4@aar'
+    compile 'com.google.firebase:firebase-database:11.6.2'
+    compile 'com.google.firebase:firebase-auth:11.6.2'
+    compile 'com.firebaseui:firebase-ui-auth:3.1.0'
+    compile 'com.android.support:multidex:1.0.2'
+
+    // butter knife
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+
+
 }
+apply plugin: 'com.google.gms.google-services'

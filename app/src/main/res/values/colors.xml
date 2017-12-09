@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-
-        <color name="orange">#FF3909</color>
-        <color name="colorAccentDark">#00B482</color>
-
-        <color name="colorBlack">#555555</color>
-        <color name="colorWhite">#FFFFFF</color>
-        <color name="colorGrey">#707070</color>
-        <color name="colorGreyLight">#8A8A8A</color>
-    <color name="white">#FFF</color>
+    <color name="colorPrimary">#8b8b7e</color>
+    <color name="colorPrimaryDark">#494943</color>
+    <color name="colorAccent">#FF00</color>
+    <color name="textColor">#000</color>
+    <color name="description_space">#8c8c80</color>
+    <color name="titleColor">#FF00</color>
+    <color name="transparent">#80000000</color>
+    <color name="primary">#ffffff</color>
+    <color name="red">#FF00</color>
+    <color name="white">#FFFF</color>
+    <color name="toolbar_color">#e982e5</color>
+    <color name="text_color_for_movie_overview">@android:color/black</color>
+    <color name="text_background">@android:color/black</color>
+    <color name="text_color_for_review_content">@android:color/black</color>
 
 </resources>
