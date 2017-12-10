@@ -88,5 +88,6 @@
     <string name="share_trailer">Share Trailer</string>
     <string name="pref_favorite_value">favorite.desc</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
+    <string name="invite">invite</string>
 
 </resources>

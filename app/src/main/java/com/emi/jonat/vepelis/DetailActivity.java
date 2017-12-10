@@ -25,7 +25,6 @@ public class DetailActivity extends AppCompatActivity implements MovieAdapter.Ca
         setContentView(R.layout.activity_detail);
 
         mToolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-        int padding = 10;
         setSupportActionBar(mToolbar);
 
 

@@ -7,13 +7,11 @@
     <item
         android:id="@+id/invite"
         android:icon="@drawable/ic_insert_invitation_black_24dp"
-        android:iconTintMode="screen"
-        android:title="@string/action_fav"
-        app:showAsAction="always"></item>
+        android:title="@string/invite"
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_share"
         android:icon="@drawable/ic_share_black_24dp"
-        android:iconTintMode="screen"
         android:title="@string/share_trailer"
         app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
         app:showAsAction="ifRoom" />

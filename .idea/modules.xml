@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/RetrofitSortby.iml" filepath="$PROJECT_DIR$/RetrofitSortby.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Pelise.iml" filepath="$PROJECT_DIR$/Pelise.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
