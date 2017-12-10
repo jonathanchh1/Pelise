@@ -18,14 +18,14 @@
         android:roundIcon="@mipmap/movie_logo_no_trans"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RegisterActivity">
+        <activity android:name=".Activities.RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailActivity" />
+        <activity android:name=".Services.DetailActivity" />
 
         <provider
             android:name=".data.MovieProvider"
@@ -33,7 +33,7 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".SettingActivity" />
+        <activity android:name=".Activities.SettingActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -43,9 +43,9 @@
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
 
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".ResetPasswordActivity"></activity>
+        <activity android:name=".Activities.MainActivity" />
+        <activity android:name=".Activities.LoginActivity" />
+        <activity android:name=".Activities.ResetPasswordActivity"></activity>
     </application>
 
 </manifest>

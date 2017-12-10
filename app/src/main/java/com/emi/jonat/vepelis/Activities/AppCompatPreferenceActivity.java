@@ -1,4 +1,4 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

@@ -1,10 +1,9 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Services;
 
+import com.emi.jonat.vepelis.Model.Movie;
 import com.google.gson.annotations.SerializedName;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jonat on 10/8/2017.

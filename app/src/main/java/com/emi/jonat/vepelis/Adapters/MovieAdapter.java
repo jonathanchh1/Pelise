@@ -1,16 +1,13 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Adapters;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +16,17 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.emi.jonat.vepelis.Model.Movie;
+import com.emi.jonat.vepelis.data.Query;
+import com.emi.jonat.vepelis.R;
+import com.emi.jonat.vepelis.Services.Bitmap;
 import com.emi.jonat.vepelis.data.MovieContract;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 /**
  * Created by jonat on 10/8/2017.
@@ -220,6 +219,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return mListfilterable.size();
     }
 
+
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -266,6 +266,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public interface Callbacks {
         void onItemCompleted(Movie items, int position);
     }
+
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
         public Movie items;

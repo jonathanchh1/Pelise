@@ -1,4 +1,4 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

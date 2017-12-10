@@ -1,16 +1,17 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Services;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.emi.jonat.vepelis.BuildConfig;
+import com.emi.jonat.vepelis.Model.Review;
+import com.emi.jonat.vepelis.Model.Reviews;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by jonat on 10/5/2016.
@@ -59,7 +60,7 @@ public class FetchReviewsTask extends AsyncTask<Integer, Void, ArrayList<Review>
     /**
      * Interface definition for a callback to be invoked when reviews are loaded.
      */
-    interface Listener {
+    public static interface Listener {
         void onReviewsFetchFinished(ArrayList<Review> reviews);
     }
 }

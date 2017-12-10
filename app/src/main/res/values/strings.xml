@@ -89,5 +89,8 @@
     <string name="pref_favorite_value">favorite.desc</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
     <string name="invite">invite</string>
+    <string name="title_for_empty_view_favorites">no internet connection available</string>
+    <string name="text_for_empty_view_favorites">no internet connection available</string>
+    <string name="unavailable">no internet connection</string>
 
 </resources>

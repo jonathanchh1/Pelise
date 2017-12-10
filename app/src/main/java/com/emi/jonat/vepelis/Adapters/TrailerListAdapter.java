@@ -1,4 +1,4 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.emi.jonat.vepelis.R;
+import com.emi.jonat.vepelis.Model.Trailer;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

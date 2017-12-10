@@ -1,4 +1,4 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Services;
 
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -7,7 +7,11 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
+
+import com.emi.jonat.vepelis.Fragments.DetailFragment;
+import com.emi.jonat.vepelis.Model.Movie;
+import com.emi.jonat.vepelis.Adapters.MovieAdapter;
+import com.emi.jonat.vepelis.R;
 
 
 public class DetailActivity extends AppCompatActivity implements MovieAdapter.Callbacks {

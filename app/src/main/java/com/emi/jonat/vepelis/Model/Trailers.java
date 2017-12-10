@@ -1,5 +1,6 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Model;
 
+import com.emi.jonat.vepelis.Model.Trailer;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;

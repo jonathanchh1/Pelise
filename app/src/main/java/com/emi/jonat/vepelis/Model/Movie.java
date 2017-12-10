@@ -1,4 +1,4 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Model;
 
 import android.database.Cursor;
 import android.os.Parcel;

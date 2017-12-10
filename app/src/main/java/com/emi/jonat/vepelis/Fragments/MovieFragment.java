@@ -1,4 +1,4 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Fragments;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -10,12 +10,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,8 +22,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.emi.jonat.vepelis.BuildConfig;
+import com.emi.jonat.vepelis.Services.DetailActivity;
+import com.emi.jonat.vepelis.Model.Movie;
+import com.emi.jonat.vepelis.Adapters.MovieAdapter;
+import com.emi.jonat.vepelis.Services.MovieResponse;
+import com.emi.jonat.vepelis.R;
+import com.emi.jonat.vepelis.Services.ApiClient;
+import com.emi.jonat.vepelis.Services.ApiInterface;
 import com.emi.jonat.vepelis.data.MovieContract;
 
 import java.util.ArrayList;
@@ -65,6 +73,7 @@ public class MovieFragment extends Fragment {
     private String mSortby = MOST_POPULAR;
     private ArrayList<Movie> mMovies;
     private RecyclerView recyclerView;
+    private TextView EmptyState;
 
     public MovieFragment() {
         setHasOptionsMenu(true);
@@ -79,6 +88,7 @@ public class MovieFragment extends Fragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.mrecyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        EmptyState = rootView.findViewById(R.id.empty_state);
         progressBar = rootView.findViewById(R.id.progress_bar);
 
         if (savedInstanceState != null) {
@@ -162,7 +172,11 @@ public class MovieFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                mAdapter.getFilter().filter(newText);
+                if (isNetworkAvailable(getActivity())) {
+                    mAdapter.getFilter().filter(newText);
+                } else {
+                    EmptyState.setVisibility(View.VISIBLE);
+                }
                 return true;
             }
         });
@@ -197,12 +211,18 @@ public class MovieFragment extends Fragment {
             if (!mSortBy.contentEquals(FAVORITE)) {
                 ApiAccess(mSortBy);
             } else {
-                new FetchFav(getActivity()).execute(FAVORITE);
+                if (isNetworkAvailable(getActivity())) {
+                    new FetchFav(getActivity()).execute();
+                    EmptyState.setVisibility(View.GONE);
+                } else {
+                    EmptyState.setVisibility(View.VISIBLE);
+                }
             }
         } else {
-//d
+            EmptyState.setVisibility(View.VISIBLE);
         }
     }
+
 
     private boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
@@ -210,7 +230,7 @@ public class MovieFragment extends Fragment {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
         if (activeNetworkInfo == null) {
-            Toast.makeText(getActivity(), "there's no network connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "there's no network connection", Toast.LENGTH_LONG).show();
         }
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();

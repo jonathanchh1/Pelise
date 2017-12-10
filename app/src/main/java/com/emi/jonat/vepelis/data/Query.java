@@ -1,4 +1,4 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.data;
 
 import android.content.Context;
 import android.database.Cursor;

@@ -1,16 +1,17 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Services;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.emi.jonat.vepelis.BuildConfig;
+import com.emi.jonat.vepelis.Model.Trailer;
+import com.emi.jonat.vepelis.Model.Trailers;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by jonat on 10/5/2016.
@@ -59,7 +60,7 @@ public class FetchTrailersTask extends AsyncTask<Integer, Void, ArrayList<Traile
     /**
      * Interface definition for a callback to be invoked when trailers are loaded.
      */
-    interface Listener {
+    public interface Listener {
         void onFetchFinished(ArrayList<Trailer> trailers);
     }
 }

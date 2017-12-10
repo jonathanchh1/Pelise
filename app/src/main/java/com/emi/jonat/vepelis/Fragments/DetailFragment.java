@@ -1,13 +1,10 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -28,6 +25,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.emi.jonat.vepelis.Services.Bitmap;
+import com.emi.jonat.vepelis.Services.DetailActivity;
+import com.emi.jonat.vepelis.Model.Movie;
+import com.emi.jonat.vepelis.R;
+import com.emi.jonat.vepelis.Model.Review;
+import com.emi.jonat.vepelis.Adapters.ReviewListAdapter;
+import com.emi.jonat.vepelis.Model.Trailer;
+import com.emi.jonat.vepelis.Adapters.TrailerListAdapter;
+import com.emi.jonat.vepelis.Services.FetchReviewsTask;
+import com.emi.jonat.vepelis.Services.FetchTrailersTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -82,7 +89,7 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
     public DetailFragment() {
         setHasOptionsMenu(true);
     }
-//d
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

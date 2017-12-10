@@ -1,4 +1,4 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Services;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

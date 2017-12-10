@@ -1,4 +1,7 @@
-package com.emi.jonat.vepelis;
+package com.emi.jonat.vepelis.Services;
+
+import com.emi.jonat.vepelis.Model.Reviews;
+import com.emi.jonat.vepelis.Model.Trailers;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
