@@ -54,7 +54,8 @@
                     android:layout_marginBottom="@dimen/button_vertical_margin"
                     android:enabled="false"
                     android:text="@string/watch_trailer"
-                    android:theme="@style/Button.ColorPrimary" />
+                    android:textStyle="bold"
+                    android:theme="@style/Button.ColorAccent" />
 
 
             </LinearLayout>

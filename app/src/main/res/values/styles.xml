@@ -14,8 +14,8 @@
         <item name="colorButtonNormal">@color/colorAccent</item>
     </style>
 
-    <style name="Button.ColorPrimary" parent="Button">
-        <item name="colorButtonNormal">@color/colorPrimary</item>
+    <style name="Button.ColorAccent" parent="Button">
+        <item name="colorButtonNormal">@color/colorAccent</item>
     </style>
 
     <style name="Button">Button</style>

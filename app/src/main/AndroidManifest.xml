@@ -25,7 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Services.DetailActivity" />
+        <activity android:name=".Activities.DetailActivity" />
 
         <provider
             android:name=".data.MovieProvider"
@@ -45,7 +45,7 @@
 
         <activity android:name=".Activities.MainActivity" />
         <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.ResetPasswordActivity"></activity>
+        <activity android:name=".Activities.ResetPasswordActivity" />
     </application>
 
 </manifest>

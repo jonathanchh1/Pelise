@@ -92,5 +92,14 @@
     <string name="title_for_empty_view_favorites">no internet connection available</string>
     <string name="text_for_empty_view_favorites">no internet connection available</string>
     <string name="unavailable">no internet connection</string>
+    <string name="Movies">Movies</string>
+    <string name="nowplaying">Now Paying</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="error_msg_unknown">unknown error occurred</string>
+    <string name="error_msg_no_internet">no internet connection</string>
+    <string name="error_msg_timeout">timed out</string>
+    <string name="btn_retry">try again</string>
+
 
 </resources>

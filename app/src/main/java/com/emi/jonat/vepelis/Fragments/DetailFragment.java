@@ -25,8 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.emi.jonat.vepelis.Services.Bitmap;
-import com.emi.jonat.vepelis.Services.DetailActivity;
+import com.emi.jonat.vepelis.Services.Bitmaps;
+import com.emi.jonat.vepelis.Activities.DetailActivity;
 import com.emi.jonat.vepelis.Model.Movie;
 import com.emi.jonat.vepelis.R;
 import com.emi.jonat.vepelis.Model.Review;
@@ -105,7 +105,7 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
 
         ImageView movieBackdrop = ((ImageView) activity.findViewById(R.id.movie_backdrop));
         if (movieBackdrop != null) {
-            String poster_url = Bitmap.buildBackdropUrl(movie.getPosterPath());
+            String poster_url = Bitmaps.buildBackdropUrl(movie.getPosterPath());
             Log.d(LOG_TAG, "poster_url" + poster_url);
             Picasso.with(getActivity()).load(poster_url).into(movieBackdrop);
 
@@ -223,7 +223,7 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
     private void DisplayInfo(View v) {
 
         if (movie != null) {
-            String poster_url = Bitmap.buildPosterUrl(movie.getPosterPath());
+            String poster_url = Bitmaps.buildPosterUrl(movie.getPosterPath());
             //load poster with picasso
             Picasso.with(getActivity()).load(poster_url).into(mMoviePosterView);
 

@@ -26,15 +26,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.emi.jonat.vepelis.Activities.DetailActivity;
+import com.emi.jonat.vepelis.Adapters.MovieAdapter;
 import com.emi.jonat.vepelis.Adapters.NowPlayingAdapter;
 import com.emi.jonat.vepelis.BuildConfig;
-import com.emi.jonat.vepelis.Activities.DetailActivity;
 import com.emi.jonat.vepelis.Model.Movie;
-import com.emi.jonat.vepelis.Adapters.MovieAdapter;
-import com.emi.jonat.vepelis.Services.MovieResponse;
 import com.emi.jonat.vepelis.R;
 import com.emi.jonat.vepelis.Services.ApiClient;
 import com.emi.jonat.vepelis.Services.ApiInterface;
+import com.emi.jonat.vepelis.Services.MovieResponse;
 import com.emi.jonat.vepelis.Services.PaginationScrollListener;
 import com.emi.jonat.vepelis.data.MovieContract;
 
@@ -47,13 +47,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Created by jonat on 10/29/2017.
+ * Created by jonat on 12/10/2017.
  */
 
-public class MovieFragment extends Fragment {
+public class NowPlayingFragment extends Fragment {
 
-    public final static String POPULAR = "popular";
-    public final static String TOP_RATED = "top_rated";
+    public final static String UPCOMING = "upcoming";
+    public final static String NOWPLAYING = "now_playing";
     private final static String FAVORITE = "favorite";
     private static final String STORED_KEY = "choice";
     private static final String MOVIES_DATA_KEY = "movies";
@@ -76,17 +76,18 @@ public class MovieFragment extends Fragment {
     ApiInterface apiService;
     LinearLayoutManager linearLayoutManager;
     Button btnRetry;
-    private MovieAdapter mAdapter;
-    private String mSortby = POPULAR;
+    private NowPlayingAdapter.Callbacks mCallbacks;
+    private NowPlayingAdapter mAdapter;
+    private String mSortby = NOWPLAYING;
     private ArrayList<Movie> mMovies;
     private RecyclerView recyclerView;
     private TextView EmptyState;
-    private MovieAdapter.Callbacks mCallbacks;
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private int TOTAL_PAGES = 30;
     private int currentPage = PAGE_START;
-    public MovieFragment() {
+
+    public NowPlayingFragment() {
         setHasOptionsMenu(true);
     }
 
@@ -217,7 +218,7 @@ public class MovieFragment extends Fragment {
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 int statusCode = response.code();
                 mMovies = response.body().getResults();
-                mAdapter = new MovieAdapter(mMovies, R.layout.content_container, getActivity(), mCallbacks);
+                mAdapter = new NowPlayingAdapter(mMovies, R.layout.content_container, getActivity(), mCallbacks);
                 recyclerView.setAdapter(mAdapter);
                 progressBar.setVisibility(View.GONE);
                 btnRetry.setVisibility(View.GONE);
@@ -245,10 +246,10 @@ public class MovieFragment extends Fragment {
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
         search(searchView);
         switch (mSortby) {
-            case POPULAR:
+            case NOWPLAYING:
                 menu.findItem(R.id.sort_by_now_playing).setChecked(true);
                 break;
-            case TOP_RATED:
+            case UPCOMING:
                 menu.findItem(R.id.sort_by_upcoming).setChecked(true);
                 break;
             case FAVORITE:
@@ -281,12 +282,12 @@ public class MovieFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_by_now_playing:
-                mSortby = POPULAR;
+                mSortby = UPCOMING;
                 SortByMovies(mSortby);
                 item.setChecked(true);
                 return true;
             case R.id.sort_by_upcoming:
-                mSortby = TOP_RATED;
+                mSortby = NOWPLAYING;
                 SortByMovies(mSortby);
                 item.setChecked(true);
                 return true;
@@ -334,7 +335,7 @@ public class MovieFragment extends Fragment {
 
 
     public void mCallback() {
-        mCallbacks = new MovieAdapter.Callbacks() {
+        mCallbacks = new NowPlayingAdapter.Callbacks() {
             @Override
             public void onItemCompleted(Movie movie, int position) {
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
@@ -402,5 +403,4 @@ public class MovieFragment extends Fragment {
             return results;
         }
     }
-
 }

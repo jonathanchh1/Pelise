@@ -19,10 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.emi.jonat.vepelis.Model.Movie;
-import com.emi.jonat.vepelis.data.Query;
 import com.emi.jonat.vepelis.R;
 import com.emi.jonat.vepelis.Services.Bitmaps;
 import com.emi.jonat.vepelis.data.MovieContract;
+import com.emi.jonat.vepelis.data.Query;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -30,10 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by jonat on 10/8/2017.
+ * Created by jonat on 12/10/2017.
  */
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> implements Filterable {
+public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.MovieViewHolder> implements Filterable {
     private final Callbacks mCallbacks;
     private final Movie mMovie = new Movie();
     private ArrayList<Movie> itemsList;
@@ -44,8 +44,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private boolean isLoadingAdded = false;
     private boolean retryPageLoad = false;
 
-
-    public MovieAdapter(ArrayList<Movie> movie, int rowLayout, Context context, Callbacks mCallbacks) {
+    public NowPlayingAdapter(ArrayList<Movie> movie, int rowLayout, Context context, Callbacks mCallbacks) {
         this.itemsList = movie;
         this.rowLayout = rowLayout;
         this.context = context;
@@ -74,6 +73,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         notifyDataSetChanged();
     }
+
 
 
     /*--------------------------------------------------pagination----------------------------------------------*/
@@ -140,17 +140,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     /*----------------------------------------------------------end of pagination---------------------------------------------------*/
-
-
     @Override
-    public MovieAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NowPlayingAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(rowLayout, parent, false);
-        return new MovieAdapter.MovieViewHolder(view);
+        return new NowPlayingAdapter.MovieViewHolder(view);
     }
 
     @SuppressLint("StaticFieldLeak")
     @Override
-    public void onBindViewHolder(final MovieAdapter.MovieViewHolder holder, final int position) {
+    public void onBindViewHolder(final NowPlayingAdapter.MovieViewHolder holder, final int position) {
 
         final Movie mItems = mListfilterable.get(position);
         holder.items = mItems;
@@ -232,7 +230,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
                     @Override
                     protected void onPostExecute(Integer isFavored) {
-                        // if it is in favorites
+                        // if it is in favoritesc
                         if (isFavored == 1) {
                             // delete from favorites
                             new AsyncTask<Void, Void, Integer>() {
@@ -362,7 +360,4 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
     }
 }
-
-
-
 

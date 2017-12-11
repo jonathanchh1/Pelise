@@ -1,4 +1,4 @@
-package com.emi.jonat.vepelis.Services;
+package com.emi.jonat.vepelis.Activities;
 
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -51,7 +51,7 @@ public class DetailActivity extends AppCompatActivity implements MovieAdapter.Ca
     public void onItemCompleted(Movie items, int position) {
         if (mTwoPane) {
             Bundle args = new Bundle();
-            args.putParcelable("movies_details", items);
+            args.putParcelable(DetailActivity.Args, items);
 
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(args);
