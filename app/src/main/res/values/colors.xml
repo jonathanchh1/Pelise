@@ -2,11 +2,11 @@
 <resources>
     <color name="colorPrimary">#8b8b7e</color>
     <color name="colorPrimaryDark">#494943</color>
-    <color name="colorAccent">#fa6262</color>
+    <color name="colorAccent">#ff1e1e</color>
     <color name="textColor">#000</color>
     <color name="description_space">#8c8c80</color>
     <color name="titleColor">#FF00</color>
-    <color name="transparent">#80000000</color>
+    <color name="transparent">#21000000</color>
     <color name="shadow">#0c000000</color>
     <color name="colorPrimarySecondary">#ffffff</color>
     <color name="primary">#ffffff</color>

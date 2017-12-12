@@ -19,6 +19,7 @@ import com.emi.jonat.vepelis.R;
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+
     final int[] TabsIcon = new int[]{
             R.drawable.ic_movie_filter_black_24dp,
             R.drawable.ic_local_movies_black_24dp,
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ;
+
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         setupWithViewPager(viewPager);

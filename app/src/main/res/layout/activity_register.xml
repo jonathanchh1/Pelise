@@ -100,6 +100,13 @@
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size" />
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/loginButton" />
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

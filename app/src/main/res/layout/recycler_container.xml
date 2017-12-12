@@ -7,7 +7,6 @@
     android:background="@color/text_color_for_movie_overview"
     tools:context=".Activities.MainActivity">
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mrecyclerview"
         android:layout_width="match_parent"

@@ -67,5 +67,6 @@
     <dimen name="detail_title_bottom_margin">4dp</dimen>
     <dimen name="titlesize">20sp</dimen>
     <dimen name="title_size">18sp</dimen>
+    <dimen name="loginButton">30dp</dimen>
 
 </resources>

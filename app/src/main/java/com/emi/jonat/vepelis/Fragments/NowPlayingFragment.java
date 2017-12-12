@@ -54,6 +54,7 @@ public class NowPlayingFragment extends Fragment {
 
     public final static String UPCOMING = "upcoming";
     public final static String NOWPLAYING = "now_playing";
+    private static final String LOG_TAG = MovieFragment.class.getSimpleName();
     private final static String FAVORITE = "favorite";
     private static final String STORED_KEY = "choice";
     private static final String MOVIES_DATA_KEY = "movies";
@@ -76,6 +77,7 @@ public class NowPlayingFragment extends Fragment {
     ApiInterface apiService;
     LinearLayoutManager linearLayoutManager;
     Button btnRetry;
+    ArrayList<Movie> results;
     private NowPlayingAdapter.Callbacks mCallbacks;
     private NowPlayingAdapter mAdapter;
     private String mSortby = NOWPLAYING;
@@ -101,10 +103,13 @@ public class NowPlayingFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        mMovies = new ArrayList<Movie>();
         btnRetry = (Button) rootView.findViewById(R.id.error_btn_retry);
         EmptyState = rootView.findViewById(R.id.empty_state);
         progressBar = rootView.findViewById(R.id.progress_bar);
+        results = new ArrayList<Movie>();
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -162,16 +167,21 @@ public class NowPlayingFragment extends Fragment {
         call.enqueue(new Callback<MovieResponse>() {
 
             @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                mAdapter.removeLoadingFooter();
-                isLoading = false;
-                ArrayList<Movie> results = response.body().getResults();
-                mAdapter.addAll(results);
-                progressBar.setVisibility(View.GONE);
-                btnRetry.setVisibility(View.GONE);
-
-                if (currentPage != TOTAL_PAGES) mAdapter.addLoadingFooter();
-                else isLastPage = true;
+            public void onResponse(Call<MovieResponse> call, final Response<MovieResponse> response) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (response.isSuccessful()) {
+                            mAdapter.removeLoadingFooter();
+                            isLoading = false;
+                            Log.wtf(LOG_TAG, "response : " + response.body().getResults());
+                            ArrayList<Movie> results = response.body().getResults();
+                            mAdapter.addAll(results);
+                            if (currentPage != TOTAL_PAGES) mAdapter.addLoadingFooter();
+                            else isLastPage = true;
+                        }
+                    }
+                }).run();
             }
 
             @Override
@@ -215,16 +225,23 @@ public class NowPlayingFragment extends Fragment {
         Call<MovieResponse> call = apiService.getMoviesPages(mSortby, currentPage, BuildConfig.MOVIE_API);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                int statusCode = response.code();
-                mMovies = response.body().getResults();
-                mAdapter = new NowPlayingAdapter(mMovies, R.layout.content_container, getActivity(), mCallbacks);
-                recyclerView.setAdapter(mAdapter);
-                progressBar.setVisibility(View.GONE);
-                btnRetry.setVisibility(View.GONE);
+            public void onResponse(Call<MovieResponse> call, final Response<MovieResponse> response) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int statusCode = response.code();
+                        if (response.isSuccessful()) {
+                            mMovies = response.body().getResults();
+                            mAdapter = new NowPlayingAdapter(mMovies, R.layout.content_container, getActivity(), mCallbacks);
+                            recyclerView.setAdapter(mAdapter);
+                            progressBar.setVisibility(View.GONE);
+                            btnRetry.setVisibility(View.GONE);
 
-                if (currentPage <= TOTAL_PAGES) mAdapter.addLoadingFooter();
-                else isLastPage = true;
+                            if (currentPage <= TOTAL_PAGES) mAdapter.addLoadingFooter();
+                            else isLastPage = true;
+                        }
+                    }
+                }).run();
             }
 
             @Override
@@ -301,14 +318,24 @@ public class NowPlayingFragment extends Fragment {
         }
     }
 
-    private void SortByMovies(String mSortBy) {
+    private void SortByMovies(final String mSortBy) {
         if (isNetworkAvailable(getActivity())) {
             if (!mSortBy.contentEquals(FAVORITE)) {
-                ApiAccess(mSortBy);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ApiAccess(mSortBy);
+                    }
+                }).run();
             } else {
                 if (isNetworkAvailable(getActivity())) {
-                    new FetchFav(getActivity()).execute();
-                    EmptyState.setVisibility(View.GONE);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new FetchFav(getActivity()).execute();
+                            EmptyState.setVisibility(View.GONE);
+                        }
+                    }).run();
                 } else {
                     EmptyState.setVisibility(View.VISIBLE);
                 }

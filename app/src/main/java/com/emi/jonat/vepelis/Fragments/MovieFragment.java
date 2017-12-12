@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -39,7 +41,6 @@ import com.emi.jonat.vepelis.Services.PaginationScrollListener;
 import com.emi.jonat.vepelis.data.MovieContract;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import retrofit2.Call;
@@ -54,6 +55,7 @@ public class MovieFragment extends Fragment {
 
     public final static String POPULAR = "popular";
     public final static String TOP_RATED = "top_rated";
+    private static final String LOG_TAG = MovieFragment.class.getSimpleName();
     private final static String FAVORITE = "favorite";
     private static final String STORED_KEY = "choice";
     private static final String MOVIES_DATA_KEY = "movies";
@@ -81,6 +83,7 @@ public class MovieFragment extends Fragment {
     private ArrayList<Movie> mMovies;
     private RecyclerView recyclerView;
     private TextView EmptyState;
+    private ArrayList<Movie> results;
     private MovieAdapter.Callbacks mCallbacks;
     private boolean isLoading = false;
     private boolean isLastPage = false;
@@ -100,13 +103,13 @@ public class MovieFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         btnRetry = (Button) rootView.findViewById(R.id.error_btn_retry);
+        mMovies = new ArrayList<Movie>();
         EmptyState = rootView.findViewById(R.id.empty_state);
         progressBar = rootView.findViewById(R.id.progress_bar);
-
         apiService = ApiClient.getClient().create(ApiInterface.class);
-
         recyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
             @Override
             protected void loadMoreItems() {
@@ -161,16 +164,25 @@ public class MovieFragment extends Fragment {
         call.enqueue(new Callback<MovieResponse>() {
 
             @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                mAdapter.removeLoadingFooter();
-                isLoading = false;
-                ArrayList<Movie> results = response.body().getResults();
-                mAdapter.addAll(results);
-                progressBar.setVisibility(View.GONE);
-                btnRetry.setVisibility(View.GONE);
+            public void onResponse(Call<MovieResponse> call, final Response<MovieResponse> response) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (response.isSuccessful()) {
+                            mAdapter.removeLoadingFooter();
+                            isLoading = false;
+                            Log.wtf(LOG_TAG, "response : " + response.body().getResults());
+                            ArrayList<Movie> results = response.body().getResults();
+                            mAdapter.addAll(results);
+                            if (currentPage != TOTAL_PAGES) mAdapter.addLoadingFooter();
+                            else isLastPage = true;
+                            progressBar.setVisibility(View.GONE);
+                            btnRetry.setVisibility(View.GONE);
+                        }
+                    }
+                }).run();
 
-                if (currentPage != TOTAL_PAGES) mAdapter.addLoadingFooter();
-                else isLastPage = true;
+
             }
 
             @Override
@@ -214,16 +226,24 @@ public class MovieFragment extends Fragment {
         Call<MovieResponse> call = apiService.getMoviesPages(mSortby, currentPage, BuildConfig.MOVIE_API);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                int statusCode = response.code();
-                mMovies = response.body().getResults();
-                mAdapter = new MovieAdapter(mMovies, R.layout.content_container, getActivity(), mCallbacks);
-                recyclerView.setAdapter(mAdapter);
-                progressBar.setVisibility(View.GONE);
-                btnRetry.setVisibility(View.GONE);
+            public void onResponse(Call<MovieResponse> call, final Response<MovieResponse> response) {
 
-                if (currentPage <= TOTAL_PAGES) mAdapter.addLoadingFooter();
-                else isLastPage = true;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int statusCode = response.code();
+                        if (response.isSuccessful()) {
+                            mMovies = response.body().getResults();
+                            Log.d(LOG_TAG, response.body().getResults().toString());
+                            mAdapter = new MovieAdapter(mMovies, R.layout.content_container, getActivity(), mCallbacks);
+                            recyclerView.setAdapter(mAdapter);
+                            progressBar.setVisibility(View.GONE);
+                            btnRetry.setVisibility(View.GONE);
+                            if (currentPage <= TOTAL_PAGES) mAdapter.addLoadingFooter();
+                            else isLastPage = true;
+                        }
+                    }
+                }).run();
             }
 
             @Override
@@ -240,16 +260,16 @@ public class MovieFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_nouvel, menu);
+        inflater.inflate(R.menu.movie_list, menu);
         MenuItem search = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
         search(searchView);
         switch (mSortby) {
             case POPULAR:
-                menu.findItem(R.id.sort_by_now_playing).setChecked(true);
+                menu.findItem(R.id.sort_by_most_popular).setChecked(true);
                 break;
             case TOP_RATED:
-                menu.findItem(R.id.sort_by_upcoming).setChecked(true);
+                menu.findItem(R.id.sort_by_top_rated).setChecked(true);
                 break;
             case FAVORITE:
                 menu.findItem(R.id.sort_by_favorites).setChecked(true);
@@ -280,12 +300,12 @@ public class MovieFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.sort_by_now_playing:
+            case R.id.sort_by_most_popular:
                 mSortby = POPULAR;
                 SortByMovies(mSortby);
                 item.setChecked(true);
                 return true;
-            case R.id.sort_by_upcoming:
+            case R.id.sort_by_top_rated:
                 mSortby = TOP_RATED;
                 SortByMovies(mSortby);
                 item.setChecked(true);
@@ -300,14 +320,24 @@ public class MovieFragment extends Fragment {
         }
     }
 
-    private void SortByMovies(String mSortBy) {
+    private void SortByMovies(final String mSortBy) {
         if (isNetworkAvailable(getActivity())) {
             if (!mSortBy.contentEquals(FAVORITE)) {
-                ApiAccess(mSortBy);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ApiAccess(mSortBy);
+                    }
+                }).run();
             } else {
                 if (isNetworkAvailable(getActivity())) {
-                    new FetchFav(getActivity()).execute();
-                    EmptyState.setVisibility(View.GONE);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new FetchFav(getActivity()).execute();
+                            EmptyState.setVisibility(View.GONE);
+                        }
+                    }).run();
                 } else {
                     EmptyState.setVisibility(View.VISIBLE);
                 }

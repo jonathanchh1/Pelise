@@ -100,6 +100,8 @@
     <string name="error_msg_no_internet">no internet connection</string>
     <string name="error_msg_timeout">timed out</string>
     <string name="btn_retry">try again</string>
+    <string name="loading">Loading</string>
+    <string name="facebook_app_id">146695912562284</string>
 
 
 </resources>
