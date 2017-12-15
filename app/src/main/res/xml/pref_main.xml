@@ -40,15 +40,17 @@
 
         <!-- preference opens url in browser -->
 
-        <Preference
-            android:key="@string/privacy_policy"
-            android:title="@string/privacy_policy" />
+        <Preference android:title="@string/privacy_policy">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/url_privacy" />
+        </Preference>
         <Preference
             android:key="@string/title_terms"
             android:title="@string/title_terms" />
 
         <Preference
-            android:key="@string/google_logout"
-            android:title="@string/google_logouts" />
+            android:key="@string/key_logout"
+            android:title="@string/Logout" />
     </PreferenceCategory>
 </PreferenceScreen>

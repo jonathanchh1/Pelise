@@ -68,5 +68,6 @@
     <dimen name="titlesize">20sp</dimen>
     <dimen name="title_size">18sp</dimen>
     <dimen name="loginButton">30dp</dimen>
+    <dimen name="empty_height">500dp</dimen>
 
 </resources>

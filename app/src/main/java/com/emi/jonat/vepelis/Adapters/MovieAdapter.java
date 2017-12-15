@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jonat on 10/8/2017.
@@ -36,8 +36,8 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> implements Filterable {
     private final Callbacks mCallbacks;
     private final Movie mMovie = new Movie();
-    private ArrayList<Movie> itemsList;
-    private ArrayList<Movie> mListfilterable;
+    private ArrayList<Movie> itemsList = new ArrayList<>();
+    private ArrayList<Movie> mListfilterable = new ArrayList<>();
     private int rowLayout;
     private Context context;
     private String errorMsg;
@@ -52,6 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         this.mListfilterable = movie;
         this.mCallbacks = mCallbacks;
     }
+
 
     public void setData(ArrayList<Movie> data) {
         remove();
@@ -286,11 +287,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         });
     }
 
+
     @Override
     public int getItemCount() {
-        return mListfilterable.size();
+        return mListfilterable == null ? 1 : mListfilterable.size();
     }
-
 
     @Override
     public Filter getFilter() {
@@ -301,7 +302,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 String charString = charSequence.toString();
 
                 if (charString.isEmpty()) {
-
                     mListfilterable = itemsList;
                 } else {
 
@@ -310,7 +310,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     for (Movie movie : itemsList) {
 
                         if (movie.getTitle().toUpperCase().toLowerCase().contains(charString) ||
-                                movie.getPosterPath().toUpperCase().toLowerCase().contains(charString) ||
+                                movie.getOriginalTitle().toUpperCase().toLowerCase().contains(charString) ||
                                 movie.getOverview().toUpperCase().toLowerCase().contains(charString)) {
 
                             filteredList.add(movie);
@@ -333,7 +333,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         };
     }
-
 
     public interface Callbacks {
         void onItemCompleted(Movie items, int position);

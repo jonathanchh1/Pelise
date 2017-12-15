@@ -12,10 +12,13 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.emi.jonat.vepelis.R;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -44,8 +47,8 @@ public class SettingActivity extends AppCompatPreferenceActivity {
          * A preference value change listener that updates the preference's summary
          * to reflect its new value.
          */
-        private GoogleSignInClient mGoogleSignInClient;
         private FirebaseAuth mAuth;
+
         private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -80,10 +83,13 @@ public class SettingActivity extends AppCompatPreferenceActivity {
             }
         };
 
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_main);
+            FacebookSdk.sdkInitialize(getContext());
+            mAuth = FirebaseAuth.getInstance();
             bindPreferenceSummaryToValue(findPreference(getString(R.string.key_notifications_new_message_ringtone)));
 
             // feedback preference click listener
@@ -96,7 +102,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
             });
 
 
-            final Preference logout = findPreference(getString(R.string.google_logouts));
+            final Preference logout = findPreference(getString(R.string.key_logout));
             logout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
@@ -109,7 +115,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
 
         private void Logout() {
             mAuth.signOut();
-            mGoogleSignInClient.signOut();
+            LoginManager.getInstance().logOut();
             startActivity(new Intent(getActivity(), LoginActivity.class));
         }
 

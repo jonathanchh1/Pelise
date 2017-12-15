@@ -53,14 +53,14 @@ public class Movie implements Parcelable {
     @SerializedName("video")
     private Boolean video;
     @SerializedName("vote_average")
-    private String voteAverage;
+    private double voteAverage;
 
     public Movie(Cursor cursor) {
         this.id = cursor.getInt(MovieContract.COL_MOVIE_ID);
         this.title = cursor.getString(MovieContract.COL_MOVIE_TITLE);
         this.releaseDate = cursor.getString(MovieContract.COL_RELEASE_DATE);
         this.posterPath = cursor.getString(MovieContract.COL_POSTER_PATH);
-        this.voteAverage = cursor.getString(MovieContract.COL_VOTE_AVERAGE);
+        this.voteAverage = cursor.getDouble(MovieContract.COL_VOTE_AVERAGE);
         this.overview = cursor.getString(MovieContract.COL_OVERVIEW);
         this.backdropPath = cursor.getString(MovieContract.COL_BACKDROP);
         this.originalTitle = cursor.getString(MovieContract.COL_ORIGIN);
@@ -84,7 +84,7 @@ public class Movie implements Parcelable {
         title = in.readString();
         backdropPath = in.readString();
         voteCount = in.readInt();
-        voteAverage = in.readString();
+        voteAverage = in.readDouble();
     }
 
     public Boolean getVideo() {
@@ -103,11 +103,11 @@ public class Movie implements Parcelable {
         this.popularity = popularity;
     }
 
-    public String getVoteAverage() {
+    public double getVoteAverage() {
         return voteAverage;
     }
 
-    public void setVoteAverage(String voteAverage) {
+    public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
     }
 
@@ -210,7 +210,8 @@ public class Movie implements Parcelable {
         parcel.writeString(originalTitle);
         parcel.writeString(originalLanguage);
         parcel.writeString(title);
-        parcel.writeDouble(voteCount);
+        parcel.writeInt(voteCount);
+        parcel.writeDouble(voteAverage);
         parcel.writeString(backdropPath);
     }
 

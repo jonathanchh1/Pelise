@@ -36,8 +36,8 @@ import java.util.List;
 public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.MovieViewHolder> implements Filterable {
     private final Callbacks mCallbacks;
     private final Movie mMovie = new Movie();
-    private ArrayList<Movie> itemsList;
-    private ArrayList<Movie> mListfilterable;
+    private ArrayList<Movie> itemsList = new ArrayList<>();
+    private ArrayList<Movie> mListfilterable = new ArrayList<>();
     private int rowLayout;
     private Context context;
     private String errorMsg;
@@ -286,7 +286,7 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.Mo
 
     @Override
     public int getItemCount() {
-        return mListfilterable.size();
+        return mListfilterable == null ? 1 : mListfilterable.size();
     }
 
 

@@ -12,6 +12,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -83,12 +84,12 @@ public class MovieFragment extends Fragment {
     private ArrayList<Movie> mMovies;
     private RecyclerView recyclerView;
     private TextView EmptyState;
-    private ArrayList<Movie> results;
     private MovieAdapter.Callbacks mCallbacks;
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private int TOTAL_PAGES = 30;
     private int currentPage = PAGE_START;
+    private SwipeRefreshLayout swipeContainer;
     public MovieFragment() {
         setHasOptionsMenu(true);
     }
@@ -110,6 +111,8 @@ public class MovieFragment extends Fragment {
         EmptyState = rootView.findViewById(R.id.empty_state);
         progressBar = rootView.findViewById(R.id.progress_bar);
         apiService = ApiClient.getClient().create(ApiInterface.class);
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
         recyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
             @Override
             protected void loadMoreItems() {
@@ -146,9 +149,24 @@ public class MovieFragment extends Fragment {
             }
         }
 
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // once the network request has completed successfully.
+                fetchMovieAsync(currentPage);
+                swipeContainer.setRefreshing(false);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
         SortByMovies(mSortby);
         mCallback();
-
         btnRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,6 +175,45 @@ public class MovieFragment extends Fragment {
         });
         return rootView;
     }
+
+
+    public void fetchMovieAsync(final int currentPage) {
+        Call<MovieResponse> call = apiService.getMoviesPages(mSortby, currentPage, BuildConfig.MOVIE_API);
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, final Response<MovieResponse> response) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int statusCode = response.code();
+                        if (response.isSuccessful()) {
+                            mMovies = response.body().getResults();
+                            Log.d(LOG_TAG, response.body().getResults().toString());
+                            // Remember to CLEAR OUT old items before appending in the new ones
+                            mAdapter.clear();
+                            // ...the data has come back, add new items to your adapter...
+                            mAdapter.addAll(mMovies);
+                            // Now we call setRefreshing(false) to signal refresh has finished
+                            swipeContainer.setRefreshing(false);
+                            progressBar.setVisibility(View.GONE);
+                            btnRetry.setVisibility(View.GONE);
+                            if (currentPage <= TOTAL_PAGES) mAdapter.addLoadingFooter();
+                            else isLastPage = true;
+                        }
+                    }
+                }).run();
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                // Log error here since request failed
+                progressBar.setVisibility(View.VISIBLE);
+                btnRetry.setVisibility(View.VISIBLE);
+                Log.e(TAG, t.toString());
+            }
+        });
+    }
+
 
     private void loadNextPage(String mSortby) {
         Log.d(TAG, "loadNextPage: " + currentPage);
@@ -221,7 +278,7 @@ public class MovieFragment extends Fragment {
     }
 
 
-    private void ApiAccess(String mSortby) {
+    private void ApiAccess(final String mSortby) {
 
         Call<MovieResponse> call = apiService.getMoviesPages(mSortby, currentPage, BuildConfig.MOVIE_API);
         call.enqueue(new Callback<MovieResponse>() {
@@ -282,12 +339,21 @@ public class MovieFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                if (isNetworkAvailable(getActivity())) {
+                    mAdapter.clear();
+                    mAdapter.addAll(mMovies);
+                    mAdapter.getFilter().filter(query);
+                } else {
+                    EmptyState.setVisibility(View.VISIBLE);
+                }
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (isNetworkAvailable(getActivity())) {
+                    mAdapter.clear();
+                    mAdapter.addAll(mMovies);
                     mAdapter.getFilter().filter(newText);
                 } else {
                     EmptyState.setVisibility(View.VISIBLE);
@@ -327,6 +393,7 @@ public class MovieFragment extends Fragment {
                     @Override
                     public void run() {
                         ApiAccess(mSortBy);
+                        EmptyState.setVisibility(View.GONE);
                     }
                 }).run();
             } else {
@@ -340,10 +407,12 @@ public class MovieFragment extends Fragment {
                     }).run();
                 } else {
                     EmptyState.setVisibility(View.VISIBLE);
+                    btnRetry.setVisibility(View.VISIBLE);
                 }
             }
         } else {
             EmptyState.setVisibility(View.VISIBLE);
+            btnRetry.setVisibility(View.VISIBLE);
         }
     }
 

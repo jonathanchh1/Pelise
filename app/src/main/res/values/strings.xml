@@ -24,7 +24,7 @@
     <string name="summary_support">Got any queries? We are happy to help!</string>
     <string name="title_send_feedback">Send Feedback</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="url_privacy">privacy-policy/</string>
+    <string name="url_privacy">https://www.iubenda.com/privacy-policy/8284227</string>
     <string name="title_terms">Terms &amp; Conditions</string>
     <string name="title_version">Version</string>
     <string name="choose_email_client">Choose email client</string>
@@ -48,8 +48,6 @@
     <string name="prompt_password">Enter Passsword</string>
     <string name="question_forgot_password">Forgot Your Password?</string>
     <string name="btn_forgot_password">forgot password</string>
-    <string name="item_title">title space</string>
-    <string name="profile">profile_image</string>
     <string name="item_description">the description of individual items will be placed here</string>
     <string name="forgot_password_msg">We just need your registered Email address to send you password reset instruction.</string>
     <string name="email">Email</string>
@@ -102,6 +100,8 @@
     <string name="btn_retry">try again</string>
     <string name="loading">Loading</string>
     <string name="facebook_app_id">146695912562284</string>
+    <string name="Logout">Logout</string>
+    <string name="key_logout">logoutkey</string>
 
 
 </resources>

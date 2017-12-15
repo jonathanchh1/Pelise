@@ -37,6 +37,8 @@ import com.emi.jonat.vepelis.Services.FetchReviewsTask;
 import com.emi.jonat.vepelis.Services.FetchTrailersTask;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,6 +92,15 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
         setHasOptionsMenu(true);
     }
 
+    private static String convertdouble(double number) {
+        DecimalFormat formatter;
+        if (number - (int) number > 0.0)
+            formatter = new DecimalFormat("0.0"); // Here you can also deal with rounding if you wish..
+        else
+            formatter = new DecimalFormat("0");
+        return formatter.format(number);
+
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -193,18 +204,17 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
 
     }
 
-
     private void updateRatingBar(View view) {
-        if (movie.getVoteAverage() != null && !movie.getVoteAverage().isEmpty()) {
+        if (convertdouble(movie.getVoteAverage()) != null && !convertdouble(movie.getVoteAverage()).isEmpty()) {
             String userRatingStr = getResources().getString(R.string.vote_average,
-                    movie.getVoteAverage());
+                    convertdouble(movie.getVoteAverage()));
             mMovieRatingView.setText(userRatingStr);
-
-            float userRating = Float.valueOf(movie.getVoteAverage()) / 2;
+            Log.d(LOG_TAG, convertdouble(movie.getVoteAverage()));
+            float userRating = Float.valueOf(convertdouble(movie.getVoteAverage())) / 2;
             int integerPart = (int) userRating;
 
             // Fill stars
-            for (int i = 0; i < integerPart; i++) {
+            for (int i = 0; i < integerPart + 3; i++) {
                 ratingStarViews.get(i).setImageResource(R.drawable.ic_star_black_24dp);
             }
 
@@ -289,8 +299,12 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
         mButtonWatchTrailer.setEnabled(!trailers.isEmpty());
 
         if (mTrailerListAdapter.getItemCount() > 0) {
-            Trailer trailer = mTrailerListAdapter.getTrailers().get(0);
-            updateShareActionProvider(trailer);
+            if (trailer != null) {
+                for (int i = 0; i < trailers.size(); i++) {
+                    Trailer trailer = mTrailerListAdapter.getTrailers().get(i);
+                    updateShareActionProvider(trailer);
+                }
+            }
         }
     }
 
