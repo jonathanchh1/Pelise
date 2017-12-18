@@ -102,6 +102,12 @@
     <string name="facebook_app_id">146695912562284</string>
     <string name="Logout">Logout</string>
     <string name="key_logout">logoutkey</string>
+    <string name="google_play_error">google play error</string>
+    <string name="invitation_title">Pelise</string>
+    <string name="invitation_message">Share Pelise With Your Friends!</string>
+    <string name="invitation_deep_link">Pelise is Free! Share with Friends</string>
+    <string name="invitation_cta">Share Pelise!!!!</string>
+    <string name="item_title">title</string>
 
 
 </resources>

@@ -119,7 +119,7 @@ public class Movie implements Parcelable {
         this.id = id;
     }
 
-    public Integer getVoteCount() {
+    public int getVoteCount() {
         return voteCount;
     }
 

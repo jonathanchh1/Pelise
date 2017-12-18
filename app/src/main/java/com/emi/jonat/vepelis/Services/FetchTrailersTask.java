@@ -39,8 +39,10 @@ public class FetchTrailersTask extends AsyncTask<Integer, Void, ArrayList<Traile
                 BuildConfig.MOVIE_API);
         try {
             Response<Trailers> response = call.execute();
-            Trailers trailers = response.body();
-            return trailers.getTrailers();
+            if (response.isSuccessful()) {
+                Trailers trailers = response.body();
+                return trailers.getTrailers();
+            }
         } catch (IOException e) {
             Log.e(LOG_TAG, "A problem occurred talking to the movie db ", e);
         }

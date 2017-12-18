@@ -39,8 +39,10 @@ public class FetchReviewsTask extends AsyncTask<Integer, Void, ArrayList<Review>
                 BuildConfig.MOVIE_API);
         try {
             Response<Reviews> response = call.execute();
-            Reviews reviews = response.body();
-            return reviews.getReviews();
+            if (response.isSuccessful()) {
+                Reviews reviews = response.body();
+                return reviews.getReviews();
+            }
         } catch (IOException e) {
             Log.e(LOG_TAG, "A problem occurred talking to the movie db ", e);
         }

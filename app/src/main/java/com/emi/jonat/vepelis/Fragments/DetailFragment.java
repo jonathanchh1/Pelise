@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
@@ -35,6 +36,14 @@ import com.emi.jonat.vepelis.Model.Trailer;
 import com.emi.jonat.vepelis.Adapters.TrailerListAdapter;
 import com.emi.jonat.vepelis.Services.FetchReviewsTask;
 import com.emi.jonat.vepelis.Services.FetchTrailersTask;
+import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.appinvite.FirebaseAppInvite;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -47,17 +56,22 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static android.app.Activity.RESULT_OK;
+import static android.content.Intent.EXTRA_SUBJECT;
+import static android.content.Intent.EXTRA_TEXT;
+
 /**
  * Created by jonat on 12/9/2017.
  */
 public class DetailFragment extends Fragment implements FetchTrailersTask.Listener, FetchReviewsTask.Listener,
-        TrailerListAdapter.Callbacks, ReviewListAdapter.Callbacks {
+        TrailerListAdapter.Callbacks, ReviewListAdapter.Callbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     @SuppressWarnings("unused")
 
     public static final String LOG_TAG = DetailFragment.class.getSimpleName();
     public static final String EXTRA_TRAILERS = "EXTRA_TRAILERS";
     public static final String EXTRA_REVIEWS = "EXTRA_REVIEWS";
-    static final String DETAIL_MOVIE = "DETAIL_MOVIE";
+    private static final int REQUEST_INVITE = 0;
     Movie movie = new Movie();
     @BindView(R.id.movie_title)
     TextView mMovieTitleView;
@@ -69,7 +83,6 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
     TextView mMovieRatingView;
     @BindView(R.id.movie_poster)
     ImageView mMoviePosterView;
-    Unbinder unbinder;
     @BindView(R.id.trailer_list)
     RecyclerView mRecyclerViewForTrailers;
     @BindView(R.id.review_list)
@@ -84,7 +97,6 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
     private TrailerListAdapter mTrailerListAdapter;
     private ReviewListAdapter mReviewListAdapter;
     private LayoutInflater mLayoutInflater;
-    private Toast mToast;
     private ShareActionProvider mShareActionProvider;
     private View rootView;
 
@@ -140,7 +152,7 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         mLayoutInflater = inflater;
@@ -158,8 +170,6 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
             }
 
             ButterKnife.bind(this, rootView);
-
-
             DisplayInfo(rootView);
             updateRatingBar(rootView);
 
@@ -200,10 +210,73 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
             }
 
         }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                inviteInitialize();
+            }
+        }).run();
         return rootView;
+    }
+
+    private void inviteInitialize() {
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getActivity().getIntent())
+                .addOnSuccessListener(getActivity(), new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData data) {
+                        if (data == null) {
+                            Log.d(LOG_TAG, "getInvitation: no data");
+                            return;
+                        }
+
+                        // Get the deep link
+                        Uri deepLink = data.getLink();
+                        // Extract invite
+                        FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
+                        if (invite != null) {
+                            String invitationId = invite.getInvitationId();
+                        }
+                        // Handle the deep link
+                        // [START_EXCLUDE]
+                        Log.d(LOG_TAG, "deepLink:" + deepLink);
+                        if (deepLink != null) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setPackage(getActivity().getPackageName());
+                            intent.setData(deepLink);
+                            startActivity(intent);
+                        }
+                        // [END_EXCLUDE]
+                    }
+                })
+                .addOnFailureListener(getActivity(), new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(LOG_TAG, "getDynamicLink:onFailure", e);
+                    }
+                });
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(LOG_TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
+
+        if (requestCode == REQUEST_INVITE) {
+            if (resultCode == RESULT_OK) {
+                // Get the invitation IDs of all sent messages
+                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+                for (String id : ids) {
+                    Log.d(LOG_TAG, "onActivityResult: sent invitation " + id);
+                }
+            } else {
+                // Sending failed or it was canceled, show failure message to the user
+                // [START_EXCLUDE]
+                Toast.makeText(getActivity(), "failed to send messages", Toast.LENGTH_SHORT);
+                // [END_EXCLUDE]
+            }
+        }
+    }
     private void updateRatingBar(View view) {
         if (convertdouble(movie.getVoteAverage()) != null && !convertdouble(movie.getVoteAverage()).isEmpty()) {
             String userRatingStr = getResources().getString(R.string.vote_average,
@@ -256,15 +329,21 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (movie != null) {
             inflater.inflate(R.menu.main_detail, menu);
             Log.d(LOG_TAG, "detail Menu created");
 
             final MenuItem invite = menu.findItem(R.id.invite);
             MenuItem action_share = menu.findItem(R.id.action_share);
             mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(action_share);
+    }
 
-        }
+    private void onInviteClicked() {
+        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                .setMessage(getString(R.string.invitation_message))
+                .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+                .setCallToActionText(getString(R.string.invitation_cta))
+                .build();
+        startActivityForResult(intent, REQUEST_INVITE);
     }
 
     @Override
@@ -272,14 +351,13 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
         int id = item.getItemId();
         switch (id) {
             case R.id.invite:
-
-
+                onInviteClicked();
                 return true;
 
             case R.id.action_share:
                 //share movie trailer
                 updateShareActionProvider(trailer);
-
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -297,16 +375,11 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
     public void onFetchFinished(ArrayList<Trailer> trailers) {
         mTrailerListAdapter.add(trailers);
         mButtonWatchTrailer.setEnabled(!trailers.isEmpty());
-
         if (mTrailerListAdapter.getItemCount() > 0) {
-            if (trailer != null) {
-                for (int i = 0; i < trailers.size(); i++) {
-                    Trailer trailer = mTrailerListAdapter.getTrailers().get(i);
-                    updateShareActionProvider(trailer);
-                }
-            }
+            Trailer trailer = mTrailerListAdapter.getTrailers().get(0);
+            updateShareActionProvider(trailer);
         }
-    }
+        }
 
     @Override
     public void read(Review review, int position) {
@@ -330,13 +403,18 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
     }
 
     private void updateShareActionProvider(Trailer trailer) {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, movie.getTitle());
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, trailer.getName() + " : "
+        sharingIntent.putExtra(EXTRA_SUBJECT, movie.getTitle());
+        sharingIntent.putExtra(EXTRA_TEXT, trailer.getName() + " : "
                 + trailer.getTrailerUrl());
         mShareActionProvider.setShareIntent(sharingIntent);
     }
 
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(LOG_TAG, "onConnectionFailed:" + connectionResult);
+        Toast.makeText(getActivity(), getString(R.string.google_play_error), Toast.LENGTH_SHORT);
+    }
 }
 
