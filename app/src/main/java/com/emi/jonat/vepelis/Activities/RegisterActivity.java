@@ -190,7 +190,7 @@ public class RegisterActivity extends BaseActivity {
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w(LOG_TAG, "signInWithCredential:failure", task.getException());
-                                    Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                    Toast.makeText(RegisterActivity.this, "Authentication failed. ",
                                             Toast.LENGTH_SHORT).show();
                                 }
                                 // [START_EXCLUDE]

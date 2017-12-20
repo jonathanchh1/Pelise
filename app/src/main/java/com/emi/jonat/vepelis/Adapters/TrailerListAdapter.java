@@ -24,9 +24,8 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
 
     @SuppressWarnings("unused")
     private final static String LOG_TAG = TrailerListAdapter.class.getSimpleName();
-
-    private final ArrayList<Trailer> mTrailers;
     private final Callbacks mCallbacks;
+    private ArrayList<Trailer> mTrailers;
 
     public TrailerListAdapter(ArrayList<Trailer> trailers, Callbacks callbacks) {
         mTrailers = trailers;
@@ -84,6 +83,10 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
         mTrailers.clear();
         mTrailers.addAll(trailers);
         notifyDataSetChanged();
+    }
+
+    public void setmTrailers(ArrayList<Trailer> mTrailers) {
+        this.mTrailers = mTrailers;
     }
 
     public ArrayList<Trailer> getTrailers() {

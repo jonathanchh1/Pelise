@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         mTitle = (TextView) findViewById(R.id.toolbar_title);
@@ -52,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
             mTabs.getTabAt(1).setIcon(TabsIcon[1]);
 
         }
+
+        super.onCreate(savedInstanceState);
 
     }
 

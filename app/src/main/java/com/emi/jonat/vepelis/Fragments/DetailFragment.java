@@ -54,7 +54,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Intent.EXTRA_SUBJECT;
@@ -72,6 +71,7 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
     public static final String EXTRA_TRAILERS = "EXTRA_TRAILERS";
     public static final String EXTRA_REVIEWS = "EXTRA_REVIEWS";
     private static final int REQUEST_INVITE = 0;
+    public ShareActionProvider mShareActionProvider;
     Movie movie = new Movie();
     @BindView(R.id.movie_title)
     TextView mMovieTitleView;
@@ -97,21 +97,17 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
     private TrailerListAdapter mTrailerListAdapter;
     private ReviewListAdapter mReviewListAdapter;
     private LayoutInflater mLayoutInflater;
-    private ShareActionProvider mShareActionProvider;
     private View rootView;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
     }
 
-    private static String convertdouble(double number) {
-        DecimalFormat formatter;
-        if (number - (int) number > 0.0)
-            formatter = new DecimalFormat("0.0"); // Here you can also deal with rounding if you wish..
-        else
-            formatter = new DecimalFormat("0");
-        return formatter.format(number);
+    private static String convertdouble(Double number) {
+        NumberFormat myformatter = new DecimalFormat("########");
+        String result = myformatter.format(number);
 
+        return result;
     }
 
     @Override
@@ -279,8 +275,7 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
     }
     private void updateRatingBar(View view) {
         if (convertdouble(movie.getVoteAverage()) != null && !convertdouble(movie.getVoteAverage()).isEmpty()) {
-            String userRatingStr = getResources().getString(R.string.vote_average,
-                    convertdouble(movie.getVoteAverage()));
+            String userRatingStr = getResources().getString(R.string.vote_average, convertdouble(movie.getVoteAverage()));
             mMovieRatingView.setText(userRatingStr);
             Log.d(LOG_TAG, convertdouble(movie.getVoteAverage()));
             float userRating = Float.valueOf(convertdouble(movie.getVoteAverage())) / 2;
@@ -406,9 +401,12 @@ public class DetailFragment extends Fragment implements FetchTrailersTask.Listen
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(EXTRA_SUBJECT, movie.getTitle());
-        sharingIntent.putExtra(EXTRA_TEXT, trailer.getName() + " : "
-                + trailer.getTrailerUrl());
-        mShareActionProvider.setShareIntent(sharingIntent);
+        sharingIntent.putExtra(EXTRA_TEXT, trailer.getName() + " : " + trailer.getTrailerUrl());
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(sharingIntent);
+        } else {
+            Log.d(LOG_TAG, "SharedAction : " + trailer.getTrailerUrl() + trailer.getName());
+        }
     }
 
     @Override

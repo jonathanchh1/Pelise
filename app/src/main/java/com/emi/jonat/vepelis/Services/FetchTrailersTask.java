@@ -41,6 +41,7 @@ public class FetchTrailersTask extends AsyncTask<Integer, Void, ArrayList<Traile
             Response<Trailers> response = call.execute();
             if (response.isSuccessful()) {
                 Trailers trailers = response.body();
+                Log.d(LOG_TAG, trailers.toString());
                 return trailers.getTrailers();
             }
         } catch (IOException e) {

@@ -47,13 +47,14 @@ public class Movie implements Parcelable {
     @SerializedName("backdrop_path")
     private String backdropPath;
     @SerializedName("popularity")
-    private Double popularity;
+    private double popularity;
     @SerializedName("vote_count")
     private int voteCount;
     @SerializedName("video")
     private Boolean video;
     @SerializedName("vote_average")
     private double voteAverage;
+
 
     public Movie(Cursor cursor) {
         this.id = cursor.getInt(MovieContract.COL_MOVIE_ID);
@@ -95,7 +96,7 @@ public class Movie implements Parcelable {
         this.video = video;
     }
 
-    public Double getPopularity() {
+    public double getPopularity() {
         return popularity;
     }
 
@@ -181,6 +182,11 @@ public class Movie implements Parcelable {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(voteAverage);
     }
 
     public String getTitle() {
