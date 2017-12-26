@@ -69,5 +69,7 @@
     <dimen name="title_size">18sp</dimen>
     <dimen name="loginButton">30dp</dimen>
     <dimen name="empty_height">500dp</dimen>
+    <dimen name="login_height">45dp</dimen>
+    <dimen name="tryconnect">200dp</dimen>
 
 </resources>

@@ -216,10 +216,10 @@ public class Movie implements Parcelable {
         parcel.writeString(originalTitle);
         parcel.writeString(originalLanguage);
         parcel.writeString(title);
+        parcel.writeString(backdropPath);
         parcel.writeInt(voteCount);
         parcel.writeDouble(voteAverage);
-        parcel.writeString(backdropPath);
-    }
 
+    }
 
 }

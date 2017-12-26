@@ -12,14 +12,17 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.emi.jonat.vepelis.R;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SettingActivity extends AppCompatPreferenceActivity {
@@ -48,6 +51,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
          * to reflect its new value.
          */
         private FirebaseAuth mAuth;
+        private GoogleSignInClient mGoogleSignInClient;
 
         private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
             @Override
@@ -75,7 +79,6 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                             preference.setSummary(name);
                         }
                     }
-
                 } else {
                     preference.setSummary(stringValue);
                 }
@@ -88,8 +91,21 @@ public class SettingActivity extends AppCompatPreferenceActivity {
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_main);
-            FacebookSdk.sdkInitialize(getContext());
             mAuth = FirebaseAuth.getInstance();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken(getString(R.string.default_web_client_id))
+                            .requestEmail()
+                            .build();
+                    // [END config_signin]
+
+                    mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+                }
+            }).run();
+
+
             bindPreferenceSummaryToValue(findPreference(getString(R.string.key_notifications_new_message_ringtone)));
 
             // feedback preference click listener
@@ -115,7 +131,20 @@ public class SettingActivity extends AppCompatPreferenceActivity {
 
         private void Logout() {
             mAuth.signOut();
-            LoginManager.getInstance().logOut();
+            mGoogleSignInClient.signOut().addOnCompleteListener(getActivity(),
+                    new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                        }
+                    });
+
+            mGoogleSignInClient.revokeAccess().addOnCompleteListener(getActivity(),
+                    new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                        }
+                    });
             startActivity(new Intent(getActivity(), LoginActivity.class));
         }
 

@@ -428,7 +428,6 @@ public class MovieFragment extends Fragment {
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
-
     }
 
 

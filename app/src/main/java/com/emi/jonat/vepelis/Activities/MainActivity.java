@@ -2,6 +2,7 @@ package com.emi.jonat.vepelis.Activities;
 
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,13 +11,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.emi.jonat.vepelis.Adapters.MovieAdapter;
 import com.emi.jonat.vepelis.Adapters.TabAdapter;
+import com.emi.jonat.vepelis.Fragments.DetailFragment;
 import com.emi.jonat.vepelis.Fragments.MovieFragment;
 import com.emi.jonat.vepelis.Fragments.NowPlayingFragment;
+import com.emi.jonat.vepelis.Model.Movie;
 import com.emi.jonat.vepelis.R;
 
+import static com.emi.jonat.vepelis.Activities.DetailActivity.Args;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements MovieAdapter.Callbacks {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -27,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     };
     TabAdapter mTabAdapter;
     private TextView mTitle;
-
+    private android.app.FragmentManager fragmentManager = getFragmentManager();
+    private boolean mTwoPane;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
@@ -45,6 +52,19 @@ public class MainActivity extends AppCompatActivity {
         TabLayout mTabs = (TabLayout) findViewById(R.id.tabs);
         mTabs.setupWithViewPager(viewPager);
 
+        if (findViewById(R.id.detail_container) != null) {
+
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                fragmentManager.beginTransaction()
+                        .add(R.id.detail_container, new DetailFragment(), Args)
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
+        }
+
         //set icon tabs
         if (TabsIcon.length > 0) {
             mTabs.getTabAt(0).setIcon(TabsIcon[0]);
@@ -54,6 +74,25 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
+    }
+
+    @Override
+    public void onItemCompleted(Movie items, int position) {
+        if (mTwoPane) {
+            Bundle args = new Bundle();
+            args.putParcelable(Args, items);
+
+            DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(args);
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.detail_container, fragment, Args)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class)
+                    .putExtra(Args, items);
+            startActivity(intent);
+        }
     }
 
     private void setupWithViewPager(ViewPager viewPager) {

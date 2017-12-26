@@ -15,8 +15,8 @@ android {
         applicationId "com.emi.jonat.vepelis"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.5"
+        versionCode 3
+        versionName "2.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.keystask
     }
@@ -24,6 +24,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.keystask
         }
     }
     buildTypes.each {
@@ -33,7 +34,6 @@ android {
         implementation 'com.google.android.gms:play-services-auth:11.6.2'
         implementation 'com.google.firebase:firebase-messaging:11.6.2'
         implementation 'com.google.android.gms:play-services-maps:11.6.2'
-        implementation 'com.facebook.android:facebook-android-sdk:4.29.0'
 
 
 
